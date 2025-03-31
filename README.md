@@ -27,19 +27,14 @@ We aim to build an **AI-powered case management system** to streamline legal res
 
 ### Frontend
 - **Framework:** React with TypeScript
-- **UI Components:** 
-  - Shadcn/UI
-  - Tailwind CSS
-- **State Management:** React Context API
-- **Routing:** React Router v6
-- **Authentication:** Firebase Auth
-- **Database:** Firebase Firestore
-- **Real-time Updates:** Firebase Realtime Database
-- **API Client:** TanStack Query (React Query)
+- **UI Components:** Radix UI, Tailwind CSS
+- **State Management:** React Query
+- **Routing:** React Router
+- **HTTP Client:** Axios
+- **Authentication:** JWT
 
 ### Backend
 - **Framework:** Node.js with Express
-- **Language:** TypeScript
 - **Database:** MongoDB
 - **Authentication:** JWT
 - **API Documentation:** Swagger/OpenAPI
@@ -109,11 +104,11 @@ Legal-Ease/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
+
+Before you begin, ensure you have the following installed:
+- Node.js (v14 or higher)
 - MongoDB
-- Firebase account
-- OpenAI API key
+- npm or yarn
 
 ### Frontend Setup
 1. Navigate to the Frontend directory:
@@ -130,12 +125,7 @@ Legal-Ease/
 
 3. Create a `.env` file in the Frontend directory:
    ```
-   VITE_FIREBASE_API_KEY=your_firebase_api_key
-   VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
-   VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
-   VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
-   VITE_FIREBASE_APP_ID=your_firebase_app_id
+   VITE_GROQ_API_KEY=your_groq_api_key_here
    ```
 
 4. Start the development server:
@@ -160,10 +150,10 @@ Legal-Ease/
 
 3. Create a `.env` file in the Backend directory:
    ```
-   MONGODB_URI=your_mongodb_uri
-   JWT_SECRET=your_jwt_secret
-   OPENAI_API_KEY=your_openai_api_key
+   MONGODB_URI=mongodb://localhost:27017/legal-ease
+   JWT_SECRET=your-super-secret-jwt-key-for-legal-ease
    PORT=5000
+   FRONTEND_URL=http://localhost:8081
    ```
 
 4. Start the development server:
@@ -176,18 +166,13 @@ Legal-Ease/
 ## 🔒 Environment Variables
 
 ### Frontend
-- `VITE_FIREBASE_API_KEY`: Firebase API Key
-- `VITE_FIREBASE_AUTH_DOMAIN`: Firebase Auth Domain
-- `VITE_FIREBASE_PROJECT_ID`: Firebase Project ID
-- `VITE_FIREBASE_STORAGE_BUCKET`: Firebase Storage Bucket
-- `VITE_FIREBASE_MESSAGING_SENDER_ID`: Firebase Messaging Sender ID
-- `VITE_FIREBASE_APP_ID`: Firebase App ID
+- `VITE_GROQ_API_KEY`: Groq API Key
 
 ### Backend
 - `MONGODB_URI`: MongoDB Connection String
 - `JWT_SECRET`: JWT Secret Key
-- `OPENAI_API_KEY`: OpenAI API Key
 - `PORT`: Backend Server Port
+- `FRONTEND_URL`: Frontend URL
 
 ## 📝 API Documentation
 
