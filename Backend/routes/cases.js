@@ -2,6 +2,19 @@ const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
 const Case = require('../models/Case');
+const multer = require('multer');
+const path = require('path');
+
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../uploads/'));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+const upload = multer({ storage });
 
 // @route   POST /api/cases
 // @desc    Create a new case
@@ -259,6 +272,62 @@ router.post('/:id/documents', protect, async (req, res) => {
     await case_.save();
 
     res.json(case_);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/cases/{id}/upload:
+ *   post:
+ *     summary: Upload a document to a case
+ *     tags: [Cases]
+ *     consumes:
+ *       - multipart/form-data
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Case ID
+ *       - in: formData
+ *         name: file
+ *         type: file
+ *         required: true
+ *         description: The file to upload
+ *     responses:
+ *       200:
+ *         description: File uploaded and added to case documents
+ *       404:
+ *         description: Case not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/:id/upload', protect, upload.single('file'), async (req, res) => {
+  try {
+    const case_ = await Case.findById(req.params.id);
+    if (!case_) {
+      return res.status(404).json({ message: 'Case not found' });
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    const fileUrl = `/uploads/${req.file.filename}`;
+    case_.documents.push({
+      title: req.file.originalname,
+      fileUrl,
+      uploadedBy: req.user._id
+    });
+    case_.timeline.push({
+      action: 'Document Uploaded',
+      description: `File "${req.file.originalname}" uploaded`,
+      performedBy: req.user._id
+    });
+    await case_.save();
+    res.json({ message: 'File uploaded', fileUrl });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
