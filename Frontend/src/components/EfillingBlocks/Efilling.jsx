@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-
+import api from '@/services/api';
 
 
 // Define the navigation steps
@@ -62,11 +62,38 @@ const eFilingSteps = [
     };
   
     // Handler for case information form submission
-    const handleCaseSubmit = (data, any) => {
+    const handleCaseSubmit = async (data, any) => {
       setFormData(prev => ({ ...prev, case: data }));
-      setCurrentStep('complete');
-      // Here you could also send the complete data to a server
-      console.log('Complete form data:', { ...formData, case: data });
+      // Compose payload
+      const payload = {
+        // Case fields
+        title: data.subject || '',
+        description: data.causeOfAction || '',
+        category: data.caseType || '',
+        courtType: data.courtType,
+        caseType: data.caseType,
+        relief: data.relief,
+        causeOfAction: data.causeOfAction,
+        dateOfAction: data.dateOfAction,
+        subject: data.subject,
+        valuation: data.valuation,
+        causeAgainstWhom: data.causeAgainstWhom,
+        actDetails: data.actDetails,
+        sectionDetails: data.sectionDetails,
+        // Litigant fields (assuming you have user IDs, otherwise send as subdoc)
+        client: formData.litigant && formData.litigant.id, // or send full object if needed
+        // You may need to select judge from a dropdown in the UI
+        judge: '', // TODO: set judge user ID from UI
+        // Optionally handle documents
+        documents: []
+      };
+      try {
+        await api.post('/cases', payload);
+        setCurrentStep('complete');
+        toast.success('Case filed successfully!');
+      } catch (err) {
+        toast.error('Failed to file case.');
+      }
     };
   
     // Handler for form completion

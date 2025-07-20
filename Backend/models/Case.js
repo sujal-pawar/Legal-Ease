@@ -1,98 +1,25 @@
 const mongoose = require('mongoose');
 
 const caseSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  caseNumber: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'active', 'closed', 'archived'],
-    default: 'pending'
-  },
-  type: {
-    type: String,
-    required: true
-  },
-  priority: {
-    type: String,
-    enum: ['low', 'medium', 'high'],
-    default: 'medium'
-  },
-  court: {
-    name: String,
-    jurisdiction: String,
-    judge: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  },
-  parties: {
-    plaintiffs: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }],
-    defendants: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }],
-    lawyers: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }]
-  },
-  hearings: [{
-    date: Date,
-    type: String,
-    notes: String,
-    status: {
-      type: String,
-      enum: ['scheduled', 'completed', 'postponed', 'cancelled'],
-      default: 'scheduled'
-    }
-  }],
-  documents: [{
-    title: String,
-    fileUrl: String,
-    uploadedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    uploadedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }],
-  timeline: [{
-    date: {
-      type: Date,
-      default: Date.now
-    },
-    action: String,
-    description: String,
-    performedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  }]
-}, {
-  timestamps: true
-});
-
-// Add text index for search functionality
-caseSchema.index({ 
-  title: 'text', 
-  description: 'text', 
-  caseNumber: 'text' 
-});
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  category: { type: String, required: true },
+  courtType: String,
+  caseType: String,
+  relief: String,
+  causeOfAction: String,
+  dateOfAction: Date,
+  subject: String,
+  valuation: String,
+  causeAgainstWhom: String,
+  actDetails: String,
+  sectionDetails: String,
+  documents: [String],
+  lawyer: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  client: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  judge: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  status: { type: String, default: 'Filed' },
+  filingDate: { type: Date, default: Date.now }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Case', caseSchema); 
