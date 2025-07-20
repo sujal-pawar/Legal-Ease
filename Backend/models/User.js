@@ -36,20 +36,7 @@ const userSchema = new mongoose.Schema({
     // Lawyer specific fields
     barNumber: String,
     specialization: [String],
-    yearsOfExperience: Number,
-    education: [{
-      degree: String,
-      institution: String,
-      year: Number
-    }],
-    cases: {
-      active: { type: Number, default: 0 },
-      completed: { type: Number, default: 0 }
-    },
-    ratings: {
-      average: { type: Number, default: 0 },
-      total: { type: Number, default: 0 }
-    }
+    yearsOfExperience: Number
   }
 }, {
   timestamps: true

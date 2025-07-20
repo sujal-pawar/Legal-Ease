@@ -5,6 +5,12 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const caseRoutes = require('./routes/cases');
+const judgeRoutes = require('./routes/judge');
+const lawyerRoutes = require('./routes/lawyer');
+const litigantRoutes = require('./routes/litigant');
+const adminRoutes = require('./routes/admin');
+const documentRoutes = require('./routes/documents');
+const hearingRoutes = require('./routes/hearings');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
@@ -14,7 +20,7 @@ const app = express();
 
 // Enhanced CORS configuration
 const corsOptions = {
-  origin: ['http://localhost:5173', 'http://localhost:8081'],
+  origin: ['http://localhost:5173', 'http://localhost:8081', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -46,6 +52,12 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cases', caseRoutes);
+app.use('/api/judge', judgeRoutes);
+app.use('/api/lawyer', lawyerRoutes);
+app.use('/api/litigant', litigantRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/documents', documentRoutes);
+app.use('/api/hearings', hearingRoutes);
 app.use('/uploads', express.static(require('path').join(__dirname, 'uploads')));
 
 // Swagger setup
