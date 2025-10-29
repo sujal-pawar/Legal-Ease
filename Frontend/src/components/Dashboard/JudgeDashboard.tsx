@@ -1,73 +1,150 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, FileText, Users, Gavel, ArrowUp, ArrowDown } from "lucide-react";
-import { CourtCalendar } from "./CourtCalendar";
+import { CourtCalendar } from "@/components/Dashboard/CourtCalendar";
+import { analytics } from "@/services/api";
+import { useAuth } from "@/context/AuthContext";
+
+interface DashboardData {
+  casesCount: {
+    total: number;
+    active: number;
+    processing: number;
+    pending: number;
+  };
+  roleSpecific: {
+    assignedCases: number;
+    todayHearings: number;
+    casesResolved: number;
+    caseBacklog: number;
+    upcomingHearings: Array<{
+      id: string;
+      title: string;
+      date: string;
+      participants: number;
+      type: string;
+    }>;
+    recentRulings: Array<{
+      id: string;
+      caseNumber: string;
+      title: string;
+      status: string;
+      date: string;
+    }>;
+  };
+}
 
 export function JudgeDashboard() {
+  const { user } = useAuth();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const data = await analytics.getDashboard();
+        setDashboardData(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i} className="animate-pulse">
+              <CardHeader className="space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-red-500 mb-2">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!dashboardData) {
+    return <div>No data available</div>;
+  }
+
   const stats = [
     {
       title: "Assigned Cases",
-      value: "42",
+      value: dashboardData.roleSpecific.assignedCases.toString(),
       change: "+5%",
       trend: "up",
       icon: FileText,
-      description: "From last month",
+      description: "Active cases",
     },
     {
       title: "Hearings Today",
-      value: "8",
+      value: dashboardData.roleSpecific.todayHearings.toString(),
       change: "+2",
       trend: "up",
       icon: Calendar,
-      description: "Compared to yesterday",
+      description: "Scheduled today",
     },
     {
       title: "Cases Resolved",
-      value: "156",
+      value: dashboardData.roleSpecific.casesResolved.toString(),
       change: "+12%",
       trend: "up",
       icon: Gavel,
-      description: "This year",
+      description: "Total resolved",
     },
     {
       title: "Case Backlog",
-      value: "23",
+      value: dashboardData.roleSpecific.caseBacklog.toString(),
       change: "-4%",
       trend: "down",
       icon: FileText,
-      description: "From last month",
-    },
-  ];
-
-  const upcomingHearings = [
-    {
-      caseNumber: "2023-78",
-      title: "Smith v. Johnson",
-      time: "10:00 AM",
-      date: "June 15, 2023",
-      type: "Initial Hearing",
-      parties: "2 Attorneys"
-    },
-    {
-      caseNumber: "2023-45",
-      title: "State v. Williams",
-      time: "2:30 PM",
-      date: "June 16, 2023",
-      type: "Evidence Review",
-      parties: "3 Attorneys"
-    },
-    {
-      caseNumber: "2023-92",
-      title: "Garcia v. City of Springfield",
-      time: "9:00 AM",
-      date: "June 18, 2023",
-      type: "Final Arguments",
-      parties: "2 Attorneys"
+      description: "Pending cases",
     },
   ];
 
   return (
     <div className="space-y-8">
+      {/* Welcome Message */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Welcome back, {user?.fullName}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Here's an overview of your court activities and case management.
+        </p>
+      </div>
+
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, i) => (
           <Card key={i} className="hover-card">
@@ -107,6 +184,7 @@ export function JudgeDashboard() {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Recent Rulings */}
         <Card className="col-span-1 hover-card">
           <CardHeader>
             <CardTitle>Recent Rulings</CardTitle>
@@ -114,42 +192,29 @@ export function JudgeDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-start space-x-4">
-                <div className="h-9 w-9 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <Gavel className="h-5 w-5 text-primary" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Case #2023-65: Thompson v. Harris</p>
-                  <p className="text-sm text-muted-foreground">Judgment in favor of plaintiff</p>
-                  <p className="text-xs text-muted-foreground">Yesterday</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4">
-                <div className="h-9 w-9 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <Gavel className="h-5 w-5 text-primary" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Case #2023-59: Martinez v. Wilson</p>
-                  <p className="text-sm text-muted-foreground">Motion to dismiss denied</p>
-                  <p className="text-xs text-muted-foreground">3 days ago</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4">
-                <div className="h-9 w-9 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <Gavel className="h-5 w-5 text-primary" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">Case #2023-42: Brown v. State</p>
-                  <p className="text-sm text-muted-foreground">Judgment in favor of defendant</p>
-                  <p className="text-xs text-muted-foreground">Last week</p>
-                </div>
-              </div>
+              {dashboardData.roleSpecific.recentRulings.length > 0 ? (
+                dashboardData.roleSpecific.recentRulings.map((ruling, index) => (
+                  <div key={ruling.id} className="flex items-start space-x-4">
+                    <div className="h-9 w-9 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <Gavel className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">{ruling.caseNumber}: {ruling.title}</p>
+                      <p className="text-sm text-muted-foreground">Status: {ruling.status}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(ruling.date).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No recent rulings</p>
+              )}
             </div>
           </CardContent>
         </Card>
 
+        {/* Upcoming Hearings */}
         <Card className="col-span-1 hover-card">
           <CardHeader>
             <CardTitle>Upcoming Hearings</CardTitle>
@@ -157,18 +222,26 @@ export function JudgeDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {upcomingHearings.map((hearing, index) => (
-                <div key={index} className="bg-secondary/50 dark:bg-justice-800/50 rounded-lg p-4">
-                  <p className="text-sm font-medium">Case #{hearing.caseNumber}: {hearing.title}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{hearing.date} • {hearing.time}</p>
-                  <div className="flex items-center mt-3">
-                    <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center">
-                      <Users className="h-3 w-3 text-primary" />
+              {dashboardData.roleSpecific.upcomingHearings.length > 0 ? (
+                dashboardData.roleSpecific.upcomingHearings.map((hearing, index) => (
+                  <div key={hearing.id} className="bg-secondary/50 dark:bg-justice-800/50 rounded-lg p-4">
+                    <p className="text-sm font-medium">{hearing.title}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {new Date(hearing.date).toLocaleDateString()} • {new Date(hearing.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                    <div className="flex items-center mt-3">
+                      <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center">
+                        <Users className="h-3 w-3 text-primary" />
+                      </div>
+                      <span className="text-xs text-muted-foreground ml-2">
+                        {hearing.type}, {hearing.participants} participants
+                      </span>
                     </div>
-                    <span className="text-xs text-muted-foreground ml-2">{hearing.type}, {hearing.parties}</span>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No upcoming hearings</p>
+              )}
             </div>
           </CardContent>
         </Card>
