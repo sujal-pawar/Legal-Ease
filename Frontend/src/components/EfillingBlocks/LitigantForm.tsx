@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -60,7 +60,18 @@ const districtsByState: Record<string, string[]> = {
   // Add districts for other states as needed
 };
 
-const LitigantForm: React.FC<LitigantFormProps> = ({ onSubmit, className }) => {
+const FieldWrapper = React.memo(({ children, icon }: { children: React.ReactNode, icon: React.ReactNode }) => (
+  <div className="relative">
+    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+      {icon}
+    </div>
+    <div className="pl-10">{children}</div>
+  </div>
+));
+
+FieldWrapper.displayName = 'FieldWrapper';
+
+const LitigantForm: React.FC<LitigantFormProps> = React.memo(({ onSubmit, className }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -74,21 +85,15 @@ const LitigantForm: React.FC<LitigantFormProps> = ({ onSubmit, className }) => {
   });
 
   const selectedState = form.watch("state");
-  const districts = selectedState ? (districtsByState[selectedState] || []) : [];
+  const districts = useMemo(() => 
+    selectedState ? (districtsByState[selectedState] || []) : [], 
+    [selectedState]
+  );
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+  const handleSubmit = useCallback((data: z.infer<typeof formSchema>) => {
     toast.success("Litigant details saved successfully");
     onSubmit(data);
-  };
-
-  const FieldWrapper = ({ children, icon }: { children: React.ReactNode, icon: React.ReactNode }) => (
-    <div className="relative">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-        {icon}
-      </div>
-      <div className="pl-10">{children}</div>
-    </div>
-  );
+  }, [onSubmit]);
 
   return (
     <Card className={cn("form-glass w-full max-w-2xl mx-auto animate-slide-up", className)}>
@@ -249,7 +254,7 @@ const LitigantForm: React.FC<LitigantFormProps> = ({ onSubmit, className }) => {
                 type="submit" 
                 className="bg-primary hover:bg-primary/90 text-black px-6 py-2 rounded-md transition-all duration-200"
               >
-                Save & Continue
+                Next Step
               </Button>
             </div>
           </form>
@@ -257,6 +262,8 @@ const LitigantForm: React.FC<LitigantFormProps> = ({ onSubmit, className }) => {
       </CardContent>
     </Card>
   );
-};
+});
+
+LitigantForm.displayName = 'LitigantForm';
 
 export default LitigantForm;

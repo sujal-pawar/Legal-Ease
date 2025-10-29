@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -80,7 +79,18 @@ const caseTypes = [
   "Constitutional"
 ];
 
-const CaseInformationForm: React.FC<CaseInformationFormProps> = ({ 
+const FieldWrapper = React.memo(({ children, icon }: { children: React.ReactNode, icon: React.ReactNode }) => (
+  <div className="relative">
+    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+      {icon}
+    </div>
+    <div className="pl-10">{children}</div>
+  </div>
+));
+
+FieldWrapper.displayName = 'FieldWrapper';
+
+const CaseInformationForm: React.FC<CaseInformationFormProps> = React.memo(({ 
   onSubmit, 
   onBack,
   className 
@@ -100,19 +110,10 @@ const CaseInformationForm: React.FC<CaseInformationFormProps> = ({
     }
   });
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
+  const handleSubmit = useCallback((data: z.infer<typeof formSchema>) => {
     toast.success("Case information saved successfully");
     onSubmit(data);
-  };
-
-  const FieldWrapper = ({ children, icon }: { children: React.ReactNode, icon: React.ReactNode }) => (
-    <div className="relative">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-        {icon}
-      </div>
-      <div className="pl-10">{children}</div>
-    </div>
-  );
+  }, [onSubmit]);
 
   return (
     <Card className={cn("form-glass w-full max-w-2xl mx-auto animate-slide-up", className)}>
@@ -281,11 +282,11 @@ const CaseInformationForm: React.FC<CaseInformationFormProps> = ({
                 name="causeAgainstWhom"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Cause Against Whom</FormLabel>
+                    <FormLabel>Against Whom</FormLabel>
                     <FormControl>
                       <FieldWrapper icon={<Users className="h-4 w-4" />}>
                         <Input 
-                          placeholder="Enter respondent details" 
+                          placeholder="Enter against whom the case is filed" 
                           className="input-glass pl-10" 
                           {...field} 
                         />
@@ -305,7 +306,7 @@ const CaseInformationForm: React.FC<CaseInformationFormProps> = ({
                     <FormControl>
                       <FieldWrapper icon={<FileText className="h-4 w-4" />}>
                         <Input 
-                          placeholder="Enter applicable act" 
+                          placeholder="Enter act details" 
                           className="input-glass pl-10" 
                           {...field} 
                         />
@@ -325,7 +326,7 @@ const CaseInformationForm: React.FC<CaseInformationFormProps> = ({
                     <FormControl>
                       <FieldWrapper icon={<AlertCircle className="h-4 w-4" />}>
                         <Input 
-                          placeholder="Enter applicable sections" 
+                          placeholder="Enter section details" 
                           className="input-glass pl-10" 
                           {...field} 
                         />
@@ -344,8 +345,8 @@ const CaseInformationForm: React.FC<CaseInformationFormProps> = ({
                     <FormLabel>Relief Sought</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Describe the relief being sought in detail" 
-                        className="input-glass min-h-[100px] resize-y" 
+                        placeholder="Enter the relief sought in this case" 
+                        className="input-glass min-h-[100px]" 
                         {...field} 
                       />
                     </FormControl>
@@ -357,18 +358,18 @@ const CaseInformationForm: React.FC<CaseInformationFormProps> = ({
 
             <div className="flex justify-between pt-4">
               <Button 
-                type="button" 
-                variant="outline" 
+                type="button"
+                variant="outline"
                 onClick={onBack}
-                className="border-primary/30 text-primary hover:bg-primary/5"
+                className="text-black border-black hover:bg-black/5"
               >
                 Back
               </Button>
               <Button 
                 type="submit" 
-                className="bg-primary hover:bg-primary/90 text-white"
+                className="bg-primary hover:bg-primary/90 text-black"
               >
-                Submit
+                Submit Case
               </Button>
             </div>
           </form>
@@ -376,6 +377,8 @@ const CaseInformationForm: React.FC<CaseInformationFormProps> = ({
       </CardContent>
     </Card>
   );
-};
+});
+
+CaseInformationForm.displayName = 'CaseInformationForm';
 
 export default CaseInformationForm;

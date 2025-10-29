@@ -1,4 +1,3 @@
-
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,8 @@ import DateTimeSelection from './DateTimeSelection';
 import ParticipantsSection from './ParticipantsSection';
 import HelpDialog from './HelpDialogue';
 import { meetingFormSchema, MeetingFormValues } from './schema';
+import { meetingService } from '@/services/meeting';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface ScheduleMeetingFormProps {
   onScheduled: (meetingLink: string) => void;
@@ -22,6 +23,7 @@ const ScheduleMeetingForm = ({
 }: ScheduleMeetingFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const queryClient = useQueryClient();
 
   const form = useForm<MeetingFormValues>({
     resolver: zodResolver(meetingFormSchema),
@@ -38,25 +40,35 @@ const ScheduleMeetingForm = ({
     },
   });
 
-  function onSubmit(data: MeetingFormValues) {
+  async function onSubmit(data: MeetingFormValues) {
     setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const result = await meetingService.scheduleMeeting({
+        title: data.title,
+        caseNumber: data.caseNumber,
+        date: data.date.toISOString(),
+        time: data.time,
+        duration: data.duration,
+        participants: {
+          judgeEmail: data.judgeEmail,
+          lawyer1Email: data.lawyer1Email,
+          lawyer2Email: data.lawyer2Email,
+          litigant1Email: data.litigant1Email,
+          litigant2Email: data.litigant2Email,
+        }
+      });
+
+      // Invalidate any relevant queries
+      queryClient.invalidateQueries({ queryKey: ['meetings'] });
       
-      // Generate a meeting link (in real app, this would come from the backend)
-      const meetingId = Math.random().toString(36).substring(2, 10);
-      const meetingLink = `https://meet.example.com/${meetingId}`;
-      
-      console.log('Meeting scheduled with data:', data);
-      
-      // Show success message
       toast.success('Meeting scheduled successfully');
-      
-      // Pass the meeting link back to the parent component
-      onScheduled(meetingLink);
-    }, 1500);
+      onScheduled(result.meetingLink);
+    } catch (error) {
+      toast.error('Failed to schedule meeting');
+      console.error('Meeting scheduling error:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
