@@ -4,7 +4,9 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
-const caseRoutes = require('./routes/cases');
+const caseRoutes = require('./routes/efiledCases');
+const meetingRoutes = require('./routes/meeting');
+const analyticsRoutes = require('./routes/analytics');
 
 dotenv.config();
 
@@ -44,6 +46,8 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cases', caseRoutes);
+app.use('/api/meeting', meetingRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
