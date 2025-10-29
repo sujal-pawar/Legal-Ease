@@ -1,15 +1,20 @@
-
 import { useState } from 'react';
 // import Layoxut from '@/components/Layout';
-import ScheduleMeeting from './schedulemeeting';
+import ScheduleMeeting from './ScheduleMeeting';
 import MeetingLink from './MeetingLink';
 import { Navbar } from '../layout/Navbar';
 import { Footer } from '../layout/Footer';
+import { VideoCall } from './VideoCall';
+import { toast } from 'sonner';
 
 const MeetingBuilder = () => {
   const [meetingLink, setMeetingLink] = useState<string | null>(null);
+  const [isCallActive, setIsCallActive] = useState(false);
+  const [token, setToken] = useState('');
+  const [channel, setChannel] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  const handleMeetingScheduled = (link: string) => {
+  const handleMeetingScheduled = async (link: string) => {
     setMeetingLink(link);
     
     // Scroll to meeting link after a short delay
@@ -18,6 +23,34 @@ const MeetingBuilder = () => {
         behavior: 'smooth'
       });
     }, 100);
+
+    try {
+      // Call your backend to generate a token and channel name
+      const response = await fetch('/api/meeting/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ meetingLink: link })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate meeting token');
+      }
+
+      const data = await response.json();
+      setToken(data.token);
+      setChannel(data.channel);
+      setIsCallActive(true);
+    } catch (error) {
+      toast.error('Failed to start meeting');
+      setError(error instanceof Error ? error.message : 'An error occurred');
+    }
+  };
+
+  const handleVideoError = (error: Error) => {
+    toast.error(`Video call error: ${error.message}`);
+    setError(error.message);
   };
 
   return (<div>
@@ -26,7 +59,18 @@ const MeetingBuilder = () => {
        
 
         <section className="mb-16">
-          <ScheduleMeeting onScheduled={handleMeetingScheduled} />
+          {isCallActive && token && channel ? (
+            <div className="h-[600px] rounded-xl overflow-hidden shadow-lg">
+              <VideoCall
+                channelName={channel}
+                token={token}
+                uid={Math.floor(Math.random() * 1000000)}
+                onError={handleVideoError}
+              />
+            </div>
+          ) : (
+            <ScheduleMeeting onScheduled={handleMeetingScheduled} />
+          )}
         </section>
 
         {meetingLink && (
