@@ -7,7 +7,6 @@ export const meetingFormSchema = z.object({
     required_error: 'Meeting date is required',
   }),
   time: z.string().min(1, 'Meeting time is required'),
-  duration: z.string().min(1, 'Duration is required'),
   judgeEmail: z.string().email('Invalid judge email'),
   lawyer1Email: z.string().email('Invalid lawyer email'),
   lawyer2Email: z.string().email('Invalid lawyer email'),
@@ -22,7 +21,6 @@ export interface ScheduledMeeting {
   meetingLink: string;
   scheduledAt: string;
   startTime: string;
-  duration: string;
   participants: {
     judge: string;
     lawyers: string[];

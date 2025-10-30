@@ -286,10 +286,8 @@ async function seedDatabase() {
     console.log('👥 Creating demo users...');
     const createdUsers = [];
     for (const userData of demoUsers) {
-      const hashedPassword = await bcrypt.hash(userData.password, 10);
       const user = new User({
-        ...userData,
-        password: hashedPassword
+        ...userData
       });
       await user.save();
       createdUsers.push(user);

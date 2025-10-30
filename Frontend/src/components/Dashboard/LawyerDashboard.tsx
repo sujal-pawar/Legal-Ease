@@ -52,17 +52,30 @@ export function LawyerDashboard() {
     const fetchData = async () => {
       try {
         setLoading(true);
+        console.log('LawyerDashboard: Starting data fetch...');
+        console.log('LawyerDashboard: User:', user);
+        
         const [dashboardResponse, casesResponse] = await Promise.all([
           analytics.getDashboard(),
           cases.getCases(),
         ]);
         
+        console.log('LawyerDashboard: Dashboard response:', dashboardResponse);
+        console.log('LawyerDashboard: Cases response:', casesResponse);
+        
         setDashboardData(dashboardResponse);
-        setRecentCases(casesResponse.slice(0, 3)); // Get first 3 cases
+        // Handle the API response structure: { eFiledCases: [...], pagination: {...} }
+        const casesArray = casesResponse?.eFiledCases || [];
+        setRecentCases(Array.isArray(casesArray) ? casesArray.slice(0, 3) : []);
         setError(null);
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
-        setError('Failed to load dashboard data');
+        console.error('Error details:', {
+          message: err instanceof Error ? err.message : 'Unknown error',
+          response: (err as any)?.response?.data,
+          status: (err as any)?.response?.status
+        });
+        setError(`Failed to load dashboard data: ${err instanceof Error ? err.message : 'Unknown error'}`);
       } finally {
         setLoading(false);
       }
@@ -70,6 +83,9 @@ export function LawyerDashboard() {
 
     if (user) {
       fetchData();
+    } else {
+      console.log('LawyerDashboard: No user found, not fetching data');
+      setLoading(false);
     }
   }, [user]);
 
@@ -113,7 +129,7 @@ export function LawyerDashboard() {
   const stats = [
     {
       title: "Active Cases",
-      value: dashboardData.roleSpecific.clientCases.toString(),
+      value: (dashboardData?.roleSpecific?.clientCases || 0).toString(),
       change: "+3",
       trend: "up",
       icon: FileText,
@@ -121,7 +137,7 @@ export function LawyerDashboard() {
     },
     {
       title: "Upcoming Meetings",
-      value: dashboardData.roleSpecific.upcomingMeetings.length.toString(),
+      value: (dashboardData?.roleSpecific?.upcomingMeetings?.length || 0).toString(),
       change: "+2",
       trend: "up",
       icon: Calendar,
@@ -129,7 +145,7 @@ export function LawyerDashboard() {
     },
     {
       title: "Active Clients",
-      value: dashboardData.roleSpecific.activeClients.toString(),
+      value: (dashboardData?.roleSpecific?.activeClients || 0).toString(),
       change: "+1",
       trend: "up",
       icon: Clock,
@@ -137,7 +153,7 @@ export function LawyerDashboard() {
     },
     {
       title: "Cases Won",
-      value: dashboardData.roleSpecific.casesWon.toString(),
+      value: (dashboardData?.roleSpecific?.casesWon || 0).toString(),
       change: "+5%",
       trend: "up",
       icon: FileText,
@@ -243,8 +259,8 @@ export function LawyerDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {dashboardData.roleSpecific.upcomingMeetings.length > 0 ? (
-                dashboardData.roleSpecific.upcomingMeetings.map((meeting, index) => (
+              {(dashboardData?.roleSpecific?.upcomingMeetings?.length || 0) > 0 ? (
+                (dashboardData?.roleSpecific?.upcomingMeetings || []).map((meeting, index) => (
                   <div
                     key={meeting.id}
                     className="bg-secondary/50 dark:bg-justice-800/50 rounded-lg p-4"
