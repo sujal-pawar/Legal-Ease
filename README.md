@@ -1,5 +1,4 @@
-
-# ⚖️ Legal-Ease — Bringing Speed and Clarity to Justice.
+# ⚖️ Legal-Ease — Bringing Speed and Clarity to Justice
 
 **Legal-Ease** is a full-featured, production-ready **Legal Case Management System** designed for **courts, law firms, and litigants**.
 It helps manage complete **case lifecycles**, schedule **virtual hearings**, and analyze **judicial performance** — all from one centralized platform.
@@ -8,7 +7,7 @@ It helps manage complete **case lifecycles**, schedule **virtual hearings**, and
 
 ## 🧩 Why Legal-Ease?
 
-Today’s judicial and legal ecosystems often struggle with:
+Today's judicial and legal ecosystems often struggle with:
 
 * 🕒 **Long delays** in case resolution
 * 📂 **Fragmented data** across multiple sources
@@ -33,12 +32,12 @@ Today’s judicial and legal ecosystems often struggle with:
 
 ## 🚀 Tech Stack Overview
 
-**Frontend:** React + TypeScript (Vite)
-**Backend:** Node.js + Express
-**Database:** MongoDB
-**Video Conferencing:** Agora RTC
-**Email Services:** Nodemailer
-**Charts & Analytics:** Chart.js + React Chart.js 2
+**Frontend:** React + TypeScript (Vite)  
+**Backend:** Node.js + Express  
+**Database:** MongoDB  
+**Video Conferencing:** Agora RTC  
+**Email Services:** Nodemailer  
+**Charts & Analytics:** Chart.js + React Chart.js 2  
 **Auth & Access:** JWT-based Role Management (Judge / Lawyer / Litigant / Admin)
 
 ---
@@ -48,20 +47,23 @@ Today’s judicial and legal ecosystems often struggle with:
 ```
 Legal-Ease/
 │
-├── Backend/       # Express app: routes, models, services (email, agora, auth)
-│   ├── routes/
-│   ├── models/
-│   ├── services/
-│   └── config/
+├── Backend/                 # Node.js + Express API Server
+│   ├── server.js           # Main entry point
+│   ├── middleware/         # Authentication & security
+│   ├── models/            # MongoDB schemas (User, Case, Meeting)
+│   ├── routes/            # API endpoints (auth, cases, meetings, analytics)
+│   ├── services/          # Business logic (email notifications)
+│   └── scripts/           # Database seeding
 │
-└── Frontend/      # React + Vite app: UI, pages, components, hooks
-    ├── src/
-    │   ├── components/
-    │   ├── pages/
-    │   └── services/
+└── Frontend/               # React + TypeScript Client
+    ├── public/            # Static assets
+    └── src/
+        ├── components/    # UI components (Dashboard, Chat, Meeting, E-filing)
+        ├── pages/         # Route pages (Home, Auth, Cases, Chat)
+        ├── context/       # React contexts (Auth, Theme)
+        ├── services/      # API clients
+        └── types/         # TypeScript definitions
 ```
-
-Explore both folders to understand the complete development workflow.
 
 ---
 
@@ -126,13 +128,14 @@ VITE_FRONTEND_URL=http://localhost:5173
 
 ## ✨ Core Features
 
-✅ **Authentication & Role Management** — JWT-based secure login for judges, lawyers, litigants, and admins
-✅ **Case Management** — File, update, and monitor case progress with searchable metadata
-✅ **Meeting Scheduler** — Set up hearings with automatic notifications and reminders
-✅ **Virtual Hearings** — Secure, low-latency video calls powered by Agora RTC
-✅ **Analytics Dashboard** — Visual insights into case volume, backlog, and performance trends
-✅ **Error Handling & Offline Cache** — Powered by React Query for smoother UX
-✅ **Email Notifications** — Seamless updates for meetings and case changes
+✅ **Authentication & Role Management** — JWT-based secure login for judges, lawyers, litigants, and admins  
+✅ **Case Management** — File, update, and monitor case progress with searchable metadata  
+✅ **Meeting Scheduler** — Set up hearings with automatic notifications and reminders  
+✅ **Virtual Hearings** — Secure, low-latency video calls powered by Agora RTC  
+✅ **Analytics Dashboard** — Visual insights into case volume, backlog, and performance trends  
+✅ **Error Handling & Offline Cache** — Powered by React Query for smoother UX  
+✅ **Email Notifications** — Seamless updates for meetings and case changes  
+✅ **AI Legal Assistant** — Intelligent legal guidance and case research support
 
 ---
 
@@ -186,16 +189,15 @@ We welcome all contributions — bug fixes, feature additions, or documentation 
 
 ## 📜 License & Contact
 
-This project is under the **MIT License**.
+This project is under the **MIT License**.  
 For questions or collaboration:
 
-📧 [Open an issue](https://github.com/sujal-pawar/Legal-Ease/issues)
+📧 [Open an issue](https://github.com/sujal-pawar/Legal-Ease/issues)  
 🌐 GitHub: [sujal-pawar](https://github.com/sujal-pawar)
 
 ---
 
 ## 💬 Final Thought
 
-> Legal-Ease is more than just a legal tech platform — it’s a movement toward faster, clearer, and more transparent justice.
-> By streamlining case management, enabling virtual hearings, and empowering data-driven insights, we’re bringing speed and clarity to justice — for everyone, everywhere.
-
+> Legal-Ease is more than just a legal tech platform — it's a movement toward faster, clearer, and more transparent justice.
+> By streamlining case management, enabling virtual hearings, and empowering data-driven insights, we're bringing speed and clarity to justice — for everyone, everywhere.
