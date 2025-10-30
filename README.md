@@ -47,8 +47,13 @@ Today's judicial and legal ecosystems often struggle with:
 ```
 Legal-Ease/
 │
+├── README.md
+├── .gitignore
+│
 ├── Backend/                 # Node.js + Express API Server
+│   ├── package.json        # Dependencies & scripts
 │   ├── server.js           # Main entry point
+│   ├── .env.local          # Environment variables
 │   ├── middleware/         # Authentication & security
 │   ├── models/            # MongoDB schemas (User, Case, Meeting)
 │   ├── routes/            # API endpoints (auth, cases, meetings, analytics)
@@ -56,13 +61,28 @@ Legal-Ease/
 │   └── scripts/           # Database seeding
 │
 └── Frontend/               # React + TypeScript Client
-    ├── public/            # Static assets
-    └── src/
-        ├── components/    # UI components (Dashboard, Chat, Meeting, E-filing)
-        ├── pages/         # Route pages (Home, Auth, Cases, Chat)
-        ├── context/       # React contexts (Auth, Theme)
-        ├── services/      # API clients
-        └── types/         # TypeScript definitions
+    ├── package.json       # Dependencies & scripts
+    ├── index.html         # HTML template
+    ├── vite.config.ts     # Vite configuration
+    ├── tailwind.config.ts # Tailwind CSS config
+    ├── tsconfig.json      # TypeScript config
+    ├── .env              # Environment variables
+    ├── .env.example      # Environment template
+    ├── components.json   # Shadcn/ui config
+    │
+    ├── public/           # Static assets
+    │
+    └── src/              # Source code
+        ├── main.tsx      # Application entry point
+        ├── App.tsx       # Root component
+        ├── assets/       # Images & static files
+        ├── components/   # UI components (Dashboard, Chat, Meeting, E-filing)
+        ├── pages/        # Route pages (Home, Auth, Cases, Chat)
+        ├── context/      # React contexts (Auth, Theme)
+        ├── hooks/        # Custom React hooks
+        ├── lib/          # Utility functions
+        ├── services/     # API clients
+        └── types/        # TypeScript definitions
 ```
 
 ---
@@ -86,7 +106,7 @@ npm install
 npm run dev
 ```
 
-Open your browser at **[http://localhost:5173](http://localhost:5173)**.
+Open your browser at **[http://localhost:8081](http://localhost:8081)**.
 
 ---
 
@@ -109,7 +129,7 @@ EMAIL_PASS=supersecret
 EMAIL_FROM=you@example.com
 EMAIL_FROM_NAME="Legal-Ease"
 
-FRONTEND_URL=http://localhost:5173
+FRONTEND_URL=http://localhost:8081
 
 # Agora
 AGORA_APP_ID=your_agora_app_id
@@ -121,7 +141,7 @@ AGORA_APP_CERT=your_agora_app_certificate
 ```env
 VITE_API_URL=http://localhost:5000/api
 VITE_AGORA_APP_ID=your_agora_app_id
-VITE_FRONTEND_URL=http://localhost:5173
+VITE_FRONTEND_URL=http://localhost:8081
 ```
 
 ---
@@ -161,21 +181,7 @@ Common fixes:
 
 ---
 
-## 🧪 Testing & Linting
-
-```bash
-# Linting
-npm run lint
-
-# Unit tests
-npm test
-```
-
-Ensure both frontend and backend follow consistent TypeScript and ESLint rules.
-
----
-
-## 🤝 Contributing
+##  Contributing
 
 We welcome all contributions — bug fixes, feature additions, or documentation updates.
 
