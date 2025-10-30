@@ -17,8 +17,6 @@ How Legal-Ease helps:
 - Improve decision-making: surface analytics (case trends, court disposal rates, backlog by court) so administrators can prioritize resources and monitor improvements.
 - Reduce communication overhead: automated emails, meeting links, and role-based access reduce ad-hoc phone/email coordination.
 
-This README and the project code focus on delivering these improvements while keeping configuration, deployment, and developer workflows straightforward.
-
 ---
 
 ## Table of Contents 📚
@@ -53,8 +51,6 @@ Visit the folders above to explore source code and package scripts.
 
 ## Quick start (development) ⚙️
 
-Open two PowerShell terminals: one for the backend and one for the frontend.
-
 Backend
 
 ```powershell
@@ -72,13 +68,9 @@ npm install
 npm run dev
 ```
 
-Notes
-- If `npm run dev` is not available, check `package.json` in each folder for the correct start script.
-- Ensure `VITE_API_URL` points to the backend (e.g. `http://localhost:5000/api`).
-
 ## Environment variables 🔐
 
-Create `.env` files in `Backend/` and `Frontend/` (or set env vars in your deployment environment). Do not commit secrets.
+Create `.env` files in `Backend/` and `Frontend/` (or set env vars in your deployment environment). 
 
 ### Backend (example)
 
@@ -121,26 +113,6 @@ VITE_FRONTEND_URL=http://localhost:5173
 - Analytics dashboard using Chart.js and react-chartjs-2
 - Error boundaries and client-side caching with React Query
 
-## Troubleshooting 🛠️
-
-- Module not found errors: verify import paths in `Backend/server.js` and ensure referenced route files exist (for example `efiledCases.js`).
-- Email failures: verify SMTP credentials and network access to the SMTP host/port.
-- Agora video issues: ensure `AGORA_APP_ID` and `AGORA_APP_CERT` are valid and that tokens are generated server-side.
-
-If you hit a blocker, open an issue: https://github.com/sujal-pawar/Legal-Ease/issues/new
-
-## Testing & linting ✅
-
-If tests or linters are configured, run them from each package's folder (examples):
-
-```powershell
-cd Backend
-npm test
-
-cd ..\Frontend
-npm test
-```
-
 ## Contributing 🤝
 
 Contributions are welcome. Typical workflow:
@@ -159,4 +131,3 @@ If you need help, open an issue on the repository: https://github.com/sujal-pawa
 
 ---
 
-Would you like me to add `Backend/.env.example` and `Frontend/.env.example` files, or run a local smoke test (start backend + frontend) and report any runtime errors? Tell me which you'd prefer next.
