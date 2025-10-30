@@ -31,7 +31,6 @@ const ScheduleMeetingForm = ({
       title: '',
       caseNumber: '',
       time: '',
-      duration: '30',
       judgeEmail: defaultJudgeEmail,
       lawyer1Email: '',
       lawyer2Email: '',
@@ -48,7 +47,6 @@ const ScheduleMeetingForm = ({
         caseNumber: data.caseNumber,
         date: data.date.toISOString(),
         time: data.time,
-        duration: data.duration,
         participants: {
           judgeEmail: data.judgeEmail,
           lawyer1Email: data.lawyer1Email,

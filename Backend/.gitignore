@@ -1,7 +1,5 @@
 # Environment variables
-.env
+/.env
 .env.local
 .env.*.local
 
-# ... existing code ... 
-.vercel
