@@ -168,18 +168,6 @@ Legal-Ease focuses on:
 * **Scalability:** Modular backend (controllers, services, middleware)
 * **Realism:** Production-ready setup, not just a prototype
 
----
-
-## 🧩 Troubleshooting
-
-Common fixes:
-
-* **Backend not connecting:** Verify `MONGO_URI` and port configuration.
-* **Agora not working:** Double-check your `AGORA_APP_ID` and certificate.
-* **Email issues:** Use app passwords (e.g., Gmail) or verified SMTP credentials.
-* **CORS errors:** Update `CORS_ORIGIN` in your backend config.
-
----
 
 ##  Contributing
 
@@ -192,11 +180,8 @@ We welcome all contributions — bug fixes, feature additions, or documentation 
 👉 See open issues: [Legal-Ease Issues](https://github.com/sujal-pawar/Legal-Ease/issues)
 
 ---
-
-## 📜 License & Contact
-
-This project is under the **MIT License**.  
-For questions or collaboration:
+ 
+## For questions or collaboration:
 
 📧 [Open an issue](https://github.com/sujal-pawar/Legal-Ease/issues)  
 🌐 GitHub: [sujal-pawar](https://github.com/sujal-pawar)
