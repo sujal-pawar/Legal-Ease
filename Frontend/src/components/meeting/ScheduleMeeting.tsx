@@ -8,7 +8,7 @@ interface ScheduleMeetingProps {
 
 const ScheduleMeeting = ({ 
   onScheduled, 
-  defaultJudgeEmail = 'atharvkuratkar07@gmail.com' // Replace with your default judge email
+  defaultJudgeEmail = 'judge1@court.gov' // Default judge from demo data
 }: ScheduleMeetingProps) => {
   return (
     <div className="w-full max-w-4xl mx-auto rounded-xl glass glass-dark p-6 animate-scale-in">

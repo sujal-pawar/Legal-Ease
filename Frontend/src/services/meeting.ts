@@ -18,7 +18,6 @@ export const meetingService = {
     caseNumber: string;
     date: string;
     time: string;
-    duration: string;
     participants: {
       judgeEmail: string;
       lawyer1Email: string;

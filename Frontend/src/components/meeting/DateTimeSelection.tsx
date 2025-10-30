@@ -2,7 +2,6 @@
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon, Clock } from "lucide-react";
@@ -52,7 +51,7 @@ const DateTimeSelection = ({ control }: DateTimeSelectionProps) => {
                   mode="single"
                   selected={field.value}
                   onSelect={field.onChange}
-                  disabled={(date) => date < new Date()}
+                  disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
                   initialFocus
                   className="pointer-events-auto"
                 />
@@ -63,64 +62,28 @@ const DateTimeSelection = ({ control }: DateTimeSelectionProps) => {
         )}
       />
       
-      <div className="grid grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="time"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Time</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <SelectTrigger className="input-focus-ring">
-                      <SelectValue placeholder="Select time" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {['9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', 
-                        '11:30 AM', '12:00 PM', '12:30 PM', '1:00 PM', '1:30 PM', 
-                        '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', 
-                        '4:30 PM', '5:00 PM'].map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {time}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Clock className="absolute right-10 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={control}
-          name="duration"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duration</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="input-focus-ring">
-                    <SelectValue placeholder="Select duration" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="15">15 minutes</SelectItem>
-                  <SelectItem value="30">30 minutes</SelectItem>
-                  <SelectItem value="45">45 minutes</SelectItem>
-                  <SelectItem value="60">1 hour</SelectItem>
-                  <SelectItem value="90">1.5 hours</SelectItem>
-                  <SelectItem value="120">2 hours</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+      
+      <FormField
+        control={control}
+        name="time"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Time</FormLabel>
+            <FormControl>
+              <div className="relative">
+                <input
+                  type="time"
+                  {...field}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 input-focus-ring"
+                  placeholder="Select any time"
+                />
+                <Clock className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+              </div>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 };

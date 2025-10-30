@@ -133,9 +133,9 @@ export function AdminDashboard() {
     <div className="space-y-8">
       {/* Welcome Message */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+        {/* <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           Admin Dashboard - Welcome, {user?.fullName}
-        </h1>
+        </h1> */}
         <p className="text-gray-600 dark:text-gray-400">
           System overview and management console for Legal-Ease platform.
         </p>
