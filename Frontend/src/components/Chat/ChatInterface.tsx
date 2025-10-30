@@ -22,7 +22,26 @@ export function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([{
     role: 'system',
-    content: 'You are a helpful legal assistant. Provide clear and concise responses to legal queries.'
+    content: `You are Legal-Ease AI, a specialized legal assistant for the Legal-Ease court management system. 
+
+STRICT GUIDELINES:
+- ONLY provide assistance related to legal matters, court procedures, case management, and legal documentation
+- Focus on Indian legal system, court procedures, case filing, legal rights, and judiciary processes
+- Help with legal document drafting, case status inquiries, court scheduling, and legal terminology
+- Provide guidance on e-filing procedures, meeting schedules, and court etiquette
+- Explain legal concepts, rights, and procedures in simple terms
+
+IMPORTANT RESTRICTIONS:
+- DO NOT answer non-legal questions (personal advice, general knowledge, entertainment, etc.)
+- DO NOT provide medical, financial, or technical advice unrelated to legal matters
+- DO NOT engage in casual conversation or non-legal topics
+- If asked non-legal questions, politely redirect: "I'm a legal assistant and can only help with legal matters. Please ask about court procedures, legal documents, case filing, or other legal topics."
+
+RESPONSE STYLE:
+- Be professional, accurate, and helpful
+- Use clear, simple language for legal explanations
+- Always include disclaimers that this is general information, not legal advice
+- Suggest consulting with qualified lawyers for specific legal cases`
   }]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +49,47 @@ export function ChatBot() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
+
+    // Legal topic validation
+    const legalKeywords = [
+      'legal', 'court', 'case', 'law', 'judge', 'lawyer', 'attorney', 'litigation', 'filing', 'hearing', 'trial',
+      'evidence', 'witness', 'document', 'contract', 'agreement', 'rights', 'procedure', 'section', 'act',
+      'criminal', 'civil', 'family', 'property', 'constitutional', 'divorce', 'custody', 'bail', 'appeal',
+      'jurisdiction', 'verdict', 'sentence', 'plea', 'defendant', 'plaintiff', 'prosecution', 'defense',
+      'legal advice', 'legal help', 'what is law', 'how to file', 'court process', 'legal procedure'
+    ];
+
+    const inputLower = input.toLowerCase();
+    const isLegalQuery = legalKeywords.some(keyword => inputLower.includes(keyword)) ||
+                        inputLower.includes('legal') ||
+                        inputLower.includes('court') ||
+                        inputLower.includes('case') ||
+                        inputLower.includes('law');
+
+    // Check for non-legal topics
+    const nonLegalKeywords = [
+      'weather', 'sports', 'entertainment', 'cooking', 'recipe', 'music', 'movie', 'game', 'joke',
+      'personal relationship', 'dating', 'fashion', 'travel', 'vacation', 'hobby', 'pet', 'animal',
+      'technology programming', 'coding', 'software development', 'gaming', 'social media'
+    ];
+
+    const isNonLegalQuery = nonLegalKeywords.some(keyword => inputLower.includes(keyword));
+
+    if (isNonLegalQuery || (!isLegalQuery && !inputLower.includes('help') && !inputLower.includes('?'))) {
+      const restrictionMessage: Message = {
+        role: 'assistant',
+        content: "I'm Legal-Ease AI, specialized in legal assistance only. I can help you with:\n\n• Court procedures and case filing\n• Legal document preparation\n• Understanding legal rights and laws\n• E-filing processes\n• Court scheduling and meetings\n• Legal terminology explanations\n• Indian legal system guidance\n\nPlease ask me about legal matters!"
+      };
+      
+      const userMessage: Message = {
+        role: 'user',
+        content: input.trim(),
+      };
+
+      setMessages((prev) => [...prev, userMessage, restrictionMessage]);
+      setInput('');
+      return;
+    }
 
     const userMessage: Message = {
       role: 'user',
@@ -157,7 +217,7 @@ export function ChatBot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask your legal question..."
+                  placeholder="Ask about court procedures, legal documents, case filing, or laws..."
                   className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
                 />
                 <button

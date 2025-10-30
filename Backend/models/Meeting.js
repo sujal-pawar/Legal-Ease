@@ -19,7 +19,8 @@ const meetingSchema = new mongoose.Schema({
   },
   duration: {
     type: String,
-    required: true
+    required: false,
+    default: 'As needed'
   },
   participants: {
     judge: {

@@ -97,15 +97,16 @@ const MeetingLink = ({ meetingLink, className }: MeetingLinkProps) => {
         </Button>
         <Button 
           className="flex-1" 
-          onClick={() => window.open(meetingLink, '_blank')}
+          onClick={() => toast.success('🎥 Video call is now active! Camera feed should appear at the top of this page.')}
         >
-          Join Meeting
+          Check Video Status
         </Button>
       </div>
       
       <div className="mt-6 text-center">
         <p className="text-sm text-muted-foreground">
-          All participants will receive an email with meeting details
+          All participants will receive an email with meeting details.<br/>
+          The video call is now running above this section.
         </p>
       </div>
     </div>

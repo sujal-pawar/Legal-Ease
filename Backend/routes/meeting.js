@@ -72,7 +72,7 @@ router.post('/schedule', protect, async (req, res) => {
       caseNumber,
       scheduledAt: date,
       startTime: time,
-      duration,
+      duration: duration || 'As needed', // Default to 'As needed' if no duration provided
       participants: {
         judge: participants.judgeEmail,
         lawyers: [participants.lawyer1Email, participants.lawyer2Email],

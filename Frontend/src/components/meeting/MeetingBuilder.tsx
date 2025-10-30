@@ -6,6 +6,7 @@ import { Navbar } from '../layout/Navbar';
 import { Footer } from '../layout/Footer';
 import { VideoCall } from './VideoCall';
 import { toast } from 'sonner';
+import { api } from '@/services/api';
 
 const MeetingBuilder = () => {
   const [meetingLink, setMeetingLink] = useState<string | null>(null);
@@ -25,22 +26,11 @@ const MeetingBuilder = () => {
     }, 100);
 
     try {
-      // Call your backend to generate a token and channel name
-      const response = await fetch('/api/meeting/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ meetingLink: link })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate meeting token');
-      }
-
-      const data = await response.json();
-      setToken(data.token);
-      setChannel(data.channel);
+      // Call your backend to generate a token and channel name using the API service
+      const response = await api.post('/meeting/token', { meetingLink: link });
+      
+      setToken(response.data.token);
+      setChannel(response.data.channel);
       setIsCallActive(true);
     } catch (error) {
       toast.error('Failed to start meeting');
@@ -60,20 +50,37 @@ const MeetingBuilder = () => {
 
         <section className="mb-16">
           {isCallActive && token && channel ? (
-            <div className="h-[600px] rounded-xl overflow-hidden shadow-lg">
-              <VideoCall
-                channelName={channel}
-                token={token}
-                uid={Math.floor(Math.random() * 1000000)}
-                onError={handleVideoError}
-              />
+            <div>
+              {/* Video Call Section */}
+              <div className="mb-8">
+                <div className="flex items-center justify-center mb-4">
+                  <div className="h-3 w-3 bg-green-500 rounded-full animate-pulse mr-2"></div>
+                  <h2 className="text-xl font-semibold text-green-600">🎥 Video Call Active</h2>
+                </div>
+                <div className="h-[600px] rounded-xl overflow-hidden shadow-lg">
+                  <VideoCall
+                    channelName={channel}
+                    token={token}
+                    uid={Math.floor(Math.random() * 1000000)}
+                    onError={handleVideoError}
+                  />
+                </div>
+              </div>
+              
+              {/* Meeting Details Section */}
+              {meetingLink && (
+                <div className="animate-fade-in">
+                  <MeetingLink meetingLink={meetingLink} />
+                </div>
+              )}
             </div>
           ) : (
             <ScheduleMeeting onScheduled={handleMeetingScheduled} />
           )}
         </section>
 
-        {meetingLink && (
+        {/* Only show meeting link if video call hasn't started yet */}
+        {meetingLink && !isCallActive && (
           <section id="meeting-link-section" className="mb-16 animate-fade-in">
             <MeetingLink meetingLink={meetingLink} />
           </section>
